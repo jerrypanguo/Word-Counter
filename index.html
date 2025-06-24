@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>字数统计工具</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部工具栏 -->
+        <div class="top-toolbar">
+            <button id="langSwitch" class="toolbar-btn">中</button>
+        </div>
+
+        <!-- 头部标题 -->
+        <header class="header">
+            <h1>字数统计工具</h1>
+            <p class="subtitle">按照作文标准统计字数</p>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <main class="main-content">
+            <!-- 输入区域 -->
+            <div class="input-section">
+                <div class="input-header">
+                    <label for="textInput" class="input-label">输入文本</label>
+                    <button id="pasteBtn" class="paste-btn" title="粘贴文本">
+                        <span class="paste-text">粘贴</span>
+                    </button>
+                </div>
+                <textarea 
+                    id="textInput" 
+                    class="text-input" 
+                    placeholder="在这里输入你的文本..."
+                    rows="12"
+                ></textarea>
+            </div>
+
+            <!-- 统计结果区域 -->
+            <div class="stats-section">
+                <h2 class="stats-title">统计结果</h2>
+                
+                <!-- 主要统计数据 -->
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-number" id="totalCount">0</div>
+                        <div class="stat-label">总字数</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-number" id="wordCount">0</div>
+                        <div class="stat-label" id="wordLabel">字数</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-number" id="punctuationCount">0</div>
+                        <div class="stat-label">标点符号数</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-number" id="characterCount">0</div>
+                        <div class="stat-label">字符数（含空格）</div>
+                    </div>
+                </div>
+
+                <!-- 详细信息 -->
+                <div class="details-section">
+                    <h3>统计详情</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">统计规则</span>
+                        <span class="detail-value" id="ruleValue">每个汉字 + 每个标点符号 = 总字数</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">字符数（不含空格）</span>
+                        <span class="detail-value" id="characterNoSpaceCount">0</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">段落数</span>
+                        <span class="detail-value" id="paragraphCount">0</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 使用说明 -->
+        <div class="instructions">
+            <h3>使用说明</h3>
+            <ul>
+                <li id="rule1">每个中文汉字计为 1 个字数</li>
+                <li id="rule2">每个标点符号计为 1 个字数</li>
+                <li id="rule3">英文单词按单词计算</li>
+                <li id="rule4">实时显示统计结果</li>
+            </ul>
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <p>字数统计工具 - 简洁高效的文本统计工具</p>
+        </footer>
+    </div>
+
+    <!-- 消息提示框 -->
+    <div id="messageBox" class="message-box"></div>
+
+    <script src="script.js"></script>
+</body>
+</html> 

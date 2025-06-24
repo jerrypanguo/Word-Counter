@@ -1,0 +1,617 @@
+/* 全局样式重置和基础设置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+    min-height: 100vh;
+    font-weight: 400;
+}
+
+/* 容器布局 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* 语言切换按钮 */
+.language-switcher {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+.lang-btn {
+    background: #fff;
+    border: 1px solid #000;
+    color: #000;
+    padding: 8px 16px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.lang-btn:hover {
+    background: #000;
+    color: #fff;
+}
+
+.lang-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #000;
+}
+
+/* 顶部工具栏 */
+.top-toolbar {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+    align-items: center;
+}
+
+.toolbar-btn {
+    background: #fff;
+    border: 1px solid #000;
+    color: #000;
+    padding: 8px 16px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.toolbar-btn:hover {
+    background: #000;
+    color: #fff;
+}
+
+.toolbar-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #000;
+}
+
+.copy-btn::before {
+    content: "📋";
+    font-size: 0.8rem;
+}
+
+/* 消息提示框 */
+.message-box {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 12px 20px;
+    background: #fff;
+    border: 1px solid #000;
+    color: #000;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    font-family: inherit;
+}
+
+.message-box.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 头部样式 */
+.header {
+    text-align: center;
+    margin-bottom: 60px;
+    border-bottom: 1px solid #000;
+    padding-bottom: 40px;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 100;
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+}
+
+/* 主要内容区域 */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+}
+
+/* 输入区域样式 */
+.input-section {
+    border: 1px solid #000;
+    padding: 30px;
+}
+
+.input-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.input-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0;
+}
+
+.paste-btn {
+    background: #fff;
+    border: 2px solid #000;
+    color: #000;
+    padding: 12px 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.paste-btn:hover {
+    background: #000;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.paste-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.paste-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+}
+
+.paste-icon {
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.paste-btn:hover .paste-icon {
+    transform: scale(1.1);
+}
+
+.paste-text {
+    font-weight: 600;
+    letter-spacing: 0.1em;
+}
+
+.text-input {
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: none; /* 禁用手动拖拽 */
+    background: #fff;
+    font-family: inherit;
+    transition: border-color 0.2s ease, height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 200px;
+    overflow-y: hidden; /* 改为hidden，高度自动调整 */
+}
+
+.text-input:focus {
+    outline: none;
+    border-color: #000;
+}
+
+.text-input::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+/* 动态高度调整动画 */
+.text-input.typing {
+    transition: height 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 粘贴波动效果 */
+.text-input.paste-animation {
+    animation: pasteWave 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes pasteWave {
+    0% {
+        transform: translateY(0);
+        border-bottom-width: 1px;
+    }
+    15% {
+        /* 底边波动起来 */
+        border-bottom-width: 3px;
+        transform: translateY(0) scaleY(1.02);
+    }
+    30% {
+        /* 突然往上移动 */
+        transform: translateY(-8px) scaleY(0.98);
+        border-bottom-width: 1px;
+    }
+    45% {
+        /* 保持上移状态 */
+        transform: translateY(-8px) scaleY(0.98);
+        border-bottom-width: 1px;
+    }
+    60% {
+        /* 突然往下一撑 */
+        transform: translateY(0) scaleY(1.05);
+        border-bottom-width: 2px;
+    }
+    80% {
+        transform: translateY(0) scaleY(1.02);
+        border-bottom-width: 1px;
+    }
+    100% {
+        transform: translateY(0) scaleY(1);
+        border-bottom-width: 1px;
+    }
+}
+
+/* 线条波动效果 */
+.text-input.wave-line {
+    animation: lineWave 0.4s ease-in-out;
+}
+
+@keyframes lineWave {
+    0%, 100% {
+        border-bottom-width: 1px;
+    }
+    25% {
+        border-bottom-width: 2px;
+        border-bottom-color: #333;
+    }
+    50% {
+        border-bottom-width: 3px;
+        border-bottom-color: #000;
+    }
+    75% {
+        border-bottom-width: 2px;
+        border-bottom-color: #333;
+    }
+}
+
+/* 统计区域样式 */
+.stats-section {
+    border: 1px solid #000;
+    padding: 30px;
+}
+
+.stats-title {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 30px;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* 统计卡片网格 */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    margin-bottom: 40px;
+    border: 1px solid #000;
+}
+
+.stat-card {
+    background: #fff;
+    padding: 30px 20px;
+    text-align: center;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    transition: background-color 0.2s ease;
+}
+
+.stat-card:nth-child(2n) {
+    border-right: none;
+}
+
+.stat-card:nth-child(3),
+.stat-card:nth-child(4) {
+    border-bottom: none;
+}
+
+.stat-card.primary {
+    background: #000;
+    color: #fff;
+}
+
+.stat-card:hover {
+    background: #f5f5f5;
+}
+
+.stat-card.primary:hover {
+    background: #333;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 100;
+    margin-bottom: 10px;
+    font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* 详细信息区域 */
+.details-section {
+    border-top: 1px solid #000;
+    padding-top: 30px;
+}
+
+.details-section h3 {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 400;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.detail-value {
+    font-weight: 500;
+    color: #000;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9rem;
+}
+
+/* 使用说明样式 */
+.instructions {
+    border: 1px solid #000;
+    padding: 30px;
+    margin-bottom: 40px;
+}
+
+.instructions h3 {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.instructions ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.instructions li {
+    padding: 8px 0;
+    padding-left: 15px;
+    position: relative;
+    color: #666;
+    font-weight: 300;
+    font-size: 0.9rem;
+}
+
+.instructions li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: #000;
+    font-weight: normal;
+}
+
+/* 页脚样式 */
+.footer {
+    text-align: center;
+    padding: 40px 0;
+    border-top: 1px solid #000;
+    color: #666;
+    font-size: 0.8rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 15px;
+    }
+    
+    .top-toolbar {
+        top: 15px;
+        right: 15px;
+        gap: 6px;
+    }
+    
+    .toolbar-btn {
+        padding: 6px 12px;
+        font-size: 0.6rem;
+    }
+    
+    .paste-btn {
+        padding: 10px 16px;
+        font-size: 0.7rem;
+        gap: 6px;
+    }
+    
+    .paste-icon {
+        font-size: 0.9rem;
+    }
+    
+    .message-box {
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 16px;
+        font-size: 0.7rem;
+    }
+    
+    .header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .main-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        border-right: none;
+        border-bottom: 1px solid #000;
+    }
+    
+    .stat-card:last-child {
+        border-bottom: none;
+    }
+    
+    .input-section,
+    .stats-section,
+    .instructions {
+        padding: 20px;
+    }
+    
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .text-input {
+        min-height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+    
+    .text-input {
+        padding: 15px;
+        font-size: 14px;
+        min-height: 120px;
+    }
+    
+    .toolbar-btn {
+        padding: 5px 10px;
+        font-size: 0.6rem;
+    }
+    
+    .paste-btn {
+        padding: 8px 12px;
+        font-size: 0.65rem;
+        gap: 4px;
+    }
+    
+    .paste-icon {
+        font-size: 0.8rem;
+    }
+    
+    .paste-text {
+        display: none; /* 移动端隐藏文字，只显示图标 */
+    }
+    
+    .message-box {
+        bottom: 15px;
+        right: 15px;
+        padding: 8px 12px;
+        font-size: 0.7rem;
+    }
+}
+
+/* 滚动条样式 */
+.text-input::-webkit-scrollbar {
+    width: 1px;
+}
+
+.text-input::-webkit-scrollbar-track {
+    background: #fff;
+}
+
+.text-input::-webkit-scrollbar-thumb {
+    background: #000;
+}
+
+/* 选中文本样式 */
+::selection {
+    background: #000;
+    color: #fff;
+}
+
+::-moz-selection {
+    background: #000;
+    color: #fff;
+} 
