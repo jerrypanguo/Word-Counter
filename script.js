@@ -444,29 +444,25 @@ class WordCounter {
     }
 
     /**
-     * 导出文字为图片
+     * 导出高质量图片
      */
     async exportImage() {
-        const text = this.textInput.value.trim();
-        
-        if (!text) {
-            this.showExportMessage('请先输入文字内容', false);
-            return;
-        }
-
         try {
-            // 加载宋体字体
-            const font = new FontFace('Songti', 'url(./fonts/Songti.ttc)');
-            await font.load();
-            document.fonts.add(font);
+            const text = this.textInput.value.trim();
+            if (!text) {
+                this.showExportMessage('请先输入文字内容', false);
+                return;
+            }
+
+            // 预加载字体
+            await this.loadFonts();
 
             // 创建高分辨率canvas
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
-            // 设置高DPI比例以提高清晰度
-            const dpr = window.devicePixelRatio || 2;
-            const scale = Math.max(dpr, 3); // 至少3倍分辨率
+            // 设置高DPI比例
+            const scale = 3;
             
             // 设置画布基础尺寸
             const baseWidth = 800;
@@ -475,29 +471,20 @@ class WordCounter {
             const baseFontSize = 28;
             const baseCountFontSize = 24;
             
-            // 实际尺寸（高分辨率）
-            const canvasWidth = baseWidth * scale;
-            const padding = basePadding * scale;
-            const lineHeight = baseLineHeight * scale;
-            const fontSize = baseFontSize * scale;
-            const countFontSize = baseCountFontSize * scale;
-            
-            // 设置高分辨率画布
-            canvas.width = canvasWidth;
+            // 设置高分辨率画布宽度
+            canvas.width = baseWidth * scale;
             canvas.style.width = baseWidth + 'px';
             
-            // 设置字体和文字渲染
+            // 设置缩放和字体
             ctx.scale(scale, scale);
             ctx.textBaseline = 'top';
             ctx.textAlign = 'left';
-            
-            // 设置高质量文字渲染
             ctx.textRenderingOptimization = 'optimizeQuality';
             ctx.imageSmoothingEnabled = true;
             ctx.imageSmoothingQuality = 'high';
             
-            // 设置正文字体（宋体）
-            ctx.font = `${baseFontSize}px "Songti", "SimSun", "STSong", serif`;
+            // 使用系统字体
+            ctx.font = `${baseFontSize}px "Songti", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "SimSun", serif`;
             
             // 计算文字行数和高度
             const maxWidth = baseWidth - basePadding * 2;
@@ -533,9 +520,9 @@ class WordCounter {
             ctx.fillRect(basePadding, currentY, baseWidth - basePadding * 2, lineThickness);
             currentY += lineThickness + lineMargin;
             
-            // 绘制正文（使用宋体）
+            // 绘制正文（使用系统字体）
             ctx.fillStyle = '#1a1a1a';
-            ctx.font = `${baseFontSize}px "Songti", "SimSun", "STSong", serif`;
+            ctx.font = `${baseFontSize}px "Songti", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "SimSun", serif`;
             
             for (let i = 0; i < lines.length; i++) {
                 ctx.fillText(lines[i], basePadding, currentY + i * baseLineHeight);
@@ -554,7 +541,7 @@ class WordCounter {
             const countText = `"${wordCount}字`;
             
             // 字数统计使用更优雅的字体和颜色
-            ctx.font = `${baseCountFontSize}px "Songti", "SimSun", "STSong", serif`;
+            ctx.font = `${baseCountFontSize}px "Songti", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "SimSun", serif`;
             ctx.fillStyle = '#B8860B'; // 更深沉的金色
             
             // 计算字数文字的位置（右下角）
@@ -580,8 +567,19 @@ class WordCounter {
             
         } catch (error) {
             console.error('导出图片失败:', error);
-            // 如果字体加载失败，使用降级方案
-            this.exportImageFallback(text);
+            this.showExportMessage('导出失败，请重试', false);
+        }
+    }
+
+    /**
+     * 预加载字体（可选）
+     */
+    async loadFonts() {
+        try {
+            // 尝试加载字体，如果失败就忽略
+            await document.fonts.ready;
+        } catch (error) {
+            console.log('字体预加载跳过:', error);
         }
     }
 
@@ -716,7 +714,7 @@ class WordCounter {
         
         // 临时设置字体以准确测量文字宽度
         const originalFont = ctx.font;
-        ctx.font = `${fontSize}px "Songti", "SimSun", "STSong", serif`;
+        ctx.font = `${fontSize}px "Songti", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "SimSun", serif`;
         
         for (const paragraph of paragraphs) {
             if (paragraph.trim() === '') {
