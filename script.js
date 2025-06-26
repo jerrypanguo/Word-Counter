@@ -15,6 +15,7 @@ class WordCounter {
         this.paragraphCount = document.getElementById('paragraphCount');
         this.langSwitch = document.getElementById('langSwitch');
         this.pasteBtn = document.getElementById('pasteBtn');
+        this.exportBtn = document.getElementById('exportBtn');
         this.messageBox = document.getElementById('messageBox');
         this.wordLabel = document.getElementById('wordLabel');
         this.ruleValue = document.getElementById('ruleValue');
@@ -61,6 +62,11 @@ class WordCounter {
         // 监听粘贴按钮
         this.pasteBtn.addEventListener('click', () => {
             this.pasteText();
+        });
+
+        // 监听导出按钮
+        this.exportBtn.addEventListener('click', () => {
+            this.exportImage();
         });
 
         // 初始化界面
@@ -436,6 +442,327 @@ class WordCounter {
             this.messageBox.classList.remove('show');
         }, 2000);
     }
+
+    /**
+     * 导出文字为图片
+     */
+    async exportImage() {
+        const text = this.textInput.value.trim();
+        
+        if (!text) {
+            this.showExportMessage('请先输入文字内容', false);
+            return;
+        }
+
+        try {
+            // 加载宋体字体
+            const font = new FontFace('Songti', 'url(./fonts/Songti.ttc)');
+            await font.load();
+            document.fonts.add(font);
+
+            // 创建高分辨率canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 设置高DPI比例以提高清晰度
+            const dpr = window.devicePixelRatio || 2;
+            const scale = Math.max(dpr, 3); // 至少3倍分辨率
+            
+            // 设置画布基础尺寸
+            const baseWidth = 800;
+            const basePadding = 80;
+            const baseLineHeight = 42;
+            const baseFontSize = 28;
+            const baseCountFontSize = 24;
+            
+            // 实际尺寸（高分辨率）
+            const canvasWidth = baseWidth * scale;
+            const padding = basePadding * scale;
+            const lineHeight = baseLineHeight * scale;
+            const fontSize = baseFontSize * scale;
+            const countFontSize = baseCountFontSize * scale;
+            
+            // 设置高分辨率画布
+            canvas.width = canvasWidth;
+            canvas.style.width = baseWidth + 'px';
+            
+            // 设置字体和文字渲染
+            ctx.scale(scale, scale);
+            ctx.textBaseline = 'top';
+            ctx.textAlign = 'left';
+            
+            // 设置高质量文字渲染
+            ctx.textRenderingOptimization = 'optimizeQuality';
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            
+            // 设置正文字体（宋体）
+            ctx.font = `${baseFontSize}px "Songti", "SimSun", "STSong", serif`;
+            
+            // 计算文字行数和高度
+            const maxWidth = baseWidth - basePadding * 2;
+            const lines = this.wrapText(ctx, text, maxWidth, baseFontSize);
+            const textHeight = lines.length * baseLineHeight;
+            
+            // 计算总高度：上横线 + 文字区域 + 下横线 + 字数区域
+            const lineThickness = 3; // 稍微增加线条粗细
+            const lineMargin = 50;
+            const countAreaHeight = 80;
+            const baseCanvasHeight = lineMargin + lineThickness + lineMargin + textHeight + lineMargin + lineThickness + countAreaHeight;
+            
+            // 设置画布高度
+            canvas.height = baseCanvasHeight * scale;
+            canvas.style.height = baseCanvasHeight + 'px';
+            
+            // 重新设置缩放和字体（调整画布高度后需要重设）
+            ctx.scale(scale, scale);
+            ctx.textBaseline = 'top';
+            ctx.textAlign = 'left';
+            ctx.textRenderingOptimization = 'optimizeQuality';
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            
+            // 设置背景为纯白色
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, baseWidth, baseCanvasHeight);
+            
+            let currentY = lineMargin;
+            
+            // 绘制上横线（更粗更美观）
+            ctx.fillStyle = '#2c2c2c';
+            ctx.fillRect(basePadding, currentY, baseWidth - basePadding * 2, lineThickness);
+            currentY += lineThickness + lineMargin;
+            
+            // 绘制正文（使用宋体）
+            ctx.fillStyle = '#1a1a1a';
+            ctx.font = `${baseFontSize}px "Songti", "SimSun", "STSong", serif`;
+            
+            for (let i = 0; i < lines.length; i++) {
+                ctx.fillText(lines[i], basePadding, currentY + i * baseLineHeight);
+            }
+            currentY += textHeight + lineMargin;
+            
+            // 绘制下横线
+            ctx.fillStyle = '#2c2c2c';
+            ctx.fillRect(basePadding, currentY, baseWidth - basePadding * 2, lineThickness);
+            currentY += lineThickness + 25;
+            
+            // 绘制字数统计（右下角，优雅的金色）
+            const wordCount = this.currentMode === 'zh' ? 
+                this.countTotalWords(text) + this.countPunctuation(text) : 
+                this.countEnglishWords(text) + this.countPunctuation(text);
+            const countText = `"${wordCount}字`;
+            
+            // 字数统计使用更优雅的字体和颜色
+            ctx.font = `${baseCountFontSize}px "Songti", "SimSun", "STSong", serif`;
+            ctx.fillStyle = '#B8860B'; // 更深沉的金色
+            
+            // 计算字数文字的位置（右下角）
+            const countTextWidth = ctx.measureText(countText).width;
+            const countX = baseWidth - basePadding - countTextWidth;
+            const countY = currentY + 15;
+            
+            ctx.fillText(countText, countX, countY);
+            
+            // 转换为高质量图片并下载
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `字数统计_${wordCount}字_${new Date().toLocaleDateString().replace(/\//g, '-')}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showExportMessage('高清图片导出成功！', true);
+            }, 'image/png', 1.0); // 最高质量
+            
+        } catch (error) {
+            console.error('导出图片失败:', error);
+            // 如果字体加载失败，使用降级方案
+            this.exportImageFallback(text);
+        }
+    }
+
+    /**
+     * 导出图片降级方案（字体加载失败时使用）
+     */
+    async exportImageFallback(text) {
+        try {
+            // 创建高分辨率canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 设置高DPI比例
+            const scale = 3;
+            
+            // 设置画布基础尺寸
+            const baseWidth = 800;
+            const basePadding = 80;
+            const baseLineHeight = 42;
+            const baseFontSize = 28;
+            
+            // 实际尺寸（高分辨率）
+            const canvasWidth = baseWidth * scale;
+            const padding = basePadding * scale;
+            const lineHeight = baseLineHeight * scale;
+            const fontSize = baseFontSize * scale;
+            
+            // 设置高分辨率画布
+            canvas.width = canvasWidth;
+            canvas.style.width = baseWidth + 'px';
+            
+            // 设置字体和文字渲染
+            ctx.scale(scale, scale);
+            ctx.textBaseline = 'top';
+            ctx.textAlign = 'left';
+            ctx.textRenderingOptimization = 'optimizeQuality';
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            
+            // 使用系统中文字体
+            ctx.font = `${baseFontSize}px "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "SimSun", serif`;
+            
+            // 计算文字行数和高度
+            const maxWidth = baseWidth - basePadding * 2;
+            const lines = this.wrapText(ctx, text, maxWidth, baseFontSize);
+            const textHeight = lines.length * baseLineHeight;
+            
+            // 计算总高度
+            const lineThickness = 3;
+            const lineMargin = 50;
+            const countAreaHeight = 80;
+            const baseCanvasHeight = lineMargin + lineThickness + lineMargin + textHeight + lineMargin + lineThickness + countAreaHeight;
+            
+            // 设置画布高度
+            canvas.height = baseCanvasHeight * scale;
+            canvas.style.height = baseCanvasHeight + 'px';
+            
+            // 重新设置缩放和字体
+            ctx.scale(scale, scale);
+            ctx.textBaseline = 'top';
+            ctx.textAlign = 'left';
+            ctx.textRenderingOptimization = 'optimizeQuality';
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            
+            // 设置背景为纯白色
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, baseWidth, baseCanvasHeight);
+            
+            let currentY = lineMargin;
+            
+            // 绘制上横线
+            ctx.fillStyle = '#2c2c2c';
+            ctx.fillRect(basePadding, currentY, baseWidth - basePadding * 2, lineThickness);
+            currentY += lineThickness + lineMargin;
+            
+            // 绘制正文
+            ctx.fillStyle = '#1a1a1a';
+            ctx.font = `${baseFontSize}px "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "SimSun", serif`;
+            
+            for (let i = 0; i < lines.length; i++) {
+                ctx.fillText(lines[i], basePadding, currentY + i * baseLineHeight);
+            }
+            currentY += textHeight + lineMargin;
+            
+            // 绘制下横线
+            ctx.fillStyle = '#2c2c2c';
+            ctx.fillRect(basePadding, currentY, baseWidth - basePadding * 2, lineThickness);
+            currentY += lineThickness + 25;
+            
+            // 绘制字数统计
+            const wordCount = this.currentMode === 'zh' ? 
+                this.countTotalWords(text) + this.countPunctuation(text) : 
+                this.countEnglishWords(text) + this.countPunctuation(text);
+            const countText = `"${wordCount}字`;
+            
+            ctx.font = `24px "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "SimSun", serif`;
+            ctx.fillStyle = '#B8860B';
+            
+            const countTextWidth = ctx.measureText(countText).width;
+            const countX = baseWidth - basePadding - countTextWidth;
+            const countY = currentY + 15;
+            
+            ctx.fillText(countText, countX, countY);
+            
+            // 转换为高质量图片并下载
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `字数统计_${wordCount}字_${new Date().toLocaleDateString().replace(/\//g, '-')}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showExportMessage('高清图片导出成功！', true);
+            }, 'image/png', 1.0);
+            
+        } catch (error) {
+            console.error('导出图片失败:', error);
+            this.showExportMessage('导出失败，请重试', false);
+        }
+    }
+
+    /**
+     * 文字换行处理（优化版）
+     */
+    wrapText(ctx, text, maxWidth, fontSize) {
+        const lines = [];
+        const paragraphs = text.split('\n');
+        
+        // 临时设置字体以准确测量文字宽度
+        const originalFont = ctx.font;
+        ctx.font = `${fontSize}px "Songti", "SimSun", "STSong", serif`;
+        
+        for (const paragraph of paragraphs) {
+            if (paragraph.trim() === '') {
+                lines.push('');
+                continue;
+            }
+            
+            // 按字符分割，更精确地处理中文
+            const chars = [...paragraph]; // 使用扩展运算符正确处理Unicode字符
+            let line = '';
+            
+            for (const char of chars) {
+                const testLine = line + char;
+                const testWidth = ctx.measureText(testLine).width;
+                
+                if (testWidth > maxWidth && line !== '') {
+                    lines.push(line);
+                    line = char;
+                } else {
+                    line = testLine;
+                }
+            }
+            
+            if (line) {
+                lines.push(line);
+            }
+        }
+        
+        // 恢复原字体设置
+        ctx.font = originalFont;
+        
+        return lines;
+    }
+
+    /**
+     * 显示导出消息
+     */
+    showExportMessage(message, success = true) {
+        this.messageBox.textContent = message;
+        this.messageBox.className = `message-box ${success ? 'success' : 'error'}`;
+        this.messageBox.classList.add('show');
+        
+        setTimeout(() => {
+            this.messageBox.classList.remove('show');
+        }, 3000);
+    }
 }
 
 /**
@@ -445,6 +772,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const wordCounter = new WordCounter();
     
     window.wordCounter = wordCounter;
+    
+    // 检查字体加载状态
+    document.fonts.ready.then(() => {
+        console.log('字体加载完成');
+        // 检查宋体字体是否可用
+        if (document.fonts.check('16px Songti')) {
+            console.log('宋体字体加载成功！');
+        } else {
+            console.log('宋体字体加载失败，将使用系统默认字体');
+        }
+    });
     
     // 窗口大小改变时重新调整高度
     window.addEventListener('resize', () => {
