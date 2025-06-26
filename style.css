@@ -1,3 +1,12 @@
+/* 自定义字体定义 */
+@font-face {
+    font-family: 'Songti';
+    src: url('./fonts/Songti.ttc') format('truetype-collection');
+    font-display: swap;
+    font-weight: normal;
+    font-style: normal;
+}
+
 /* 全局样式重置和基础设置 */
 * {
     margin: 0;
@@ -70,8 +79,8 @@ body {
     background: #fff;
     border: 1px solid #000;
     color: #000;
-    padding: 8px 16px;
-    font-size: 0.7rem;
+    padding: 6px 12px;
+    font-size: 0.6rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -116,11 +125,23 @@ body {
     transition: all 0.3s ease;
     pointer-events: none;
     font-family: inherit;
+    max-width: 300px;
+    word-wrap: break-word;
 }
 
 .message-box.show {
     opacity: 1;
     transform: translateY(0);
+}
+
+.message-box.success {
+    background: #fff;
+    color: #000;
+}
+
+.message-box.error {
+    background: #fff;
+    color: #000;
 }
 
 /* 头部样式 */
@@ -174,57 +195,6 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin: 0;
-}
-
-.paste-btn {
-    background: #fff;
-    border: 2px solid #000;
-    color: #000;
-    padding: 12px 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: inherit;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-radius: 0;
-    position: relative;
-    overflow: hidden;
-}
-
-.paste-btn:hover {
-    background: #000;
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.paste-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.paste-btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
-}
-
-.paste-icon {
-    font-size: 1rem;
-    transition: transform 0.2s ease;
-}
-
-.paste-btn:hover .paste-icon {
-    transform: scale(1.1);
-}
-
-.paste-text {
-    font-weight: 600;
-    letter-spacing: 0.1em;
 }
 
 .text-input {
@@ -494,13 +464,25 @@ body {
         font-size: 0.6rem;
     }
     
-    .paste-btn {
+    #pasteBtn, #exportBtn {
         padding: 10px 16px;
         font-size: 0.7rem;
         gap: 6px;
     }
     
-    .paste-icon {
+    .button-group {
+        gap: 6px;
+        justify-content: flex-end; /* 移动端按钮靠右对齐 */
+    }
+    
+    .input-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .input-label {
+        text-align: center;
         font-size: 0.9rem;
     }
     
@@ -570,17 +552,18 @@ body {
         font-size: 0.6rem;
     }
     
-    .paste-btn {
+    #pasteBtn, #exportBtn {
         padding: 8px 12px;
         font-size: 0.65rem;
         gap: 4px;
     }
     
-    .paste-icon {
-        font-size: 0.8rem;
+    .button-group {
+        justify-content: flex-end; /* 小屏幕时也保持右对齐 */
+        gap: 4px;
     }
     
-    .paste-text {
+    .paste-text, .export-text {
         display: none; /* 移动端隐藏文字，只显示图标 */
     }
     
@@ -614,4 +597,49 @@ body {
 ::-moz-selection {
     background: #000;
     color: #fff;
-} 
+}
+
+/* 按钮组样式 */
+.button-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* 粘贴和导出按钮专门样式 */
+#pasteBtn, #exportBtn {
+    background: #fff;
+    border: 2px solid #000;
+    color: #000;
+    padding: 12px 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+#pasteBtn:hover, #exportBtn:hover {
+    background: #000;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#pasteBtn:active, #exportBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#pasteBtn:focus, #exportBtn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+}
