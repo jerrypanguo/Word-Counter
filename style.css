@@ -1,7 +1,7 @@
-/* 自定义字体定义 */
+/* 自定义字体定义 - 使用系统字体，避免加载问题 */
 @font-face {
     font-family: 'Songti';
-    src: url('./fonts/Songti.ttc') format('truetype-collection');
+    src: local('Songti SC'), local('SimSun'), local('Song'), local('宋体'), local('STSong');
     font-display: swap;
     font-weight: normal;
     font-style: normal;
