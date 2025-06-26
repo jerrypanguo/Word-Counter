@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>字数统计工具</title>
+    <link rel="preload" href="./fonts/Songti.ttc" as="font" type="font/ttc" crossorigin>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -25,9 +26,14 @@
             <div class="input-section">
                 <div class="input-header">
                     <label for="textInput" class="input-label">输入文本</label>
-                    <button id="pasteBtn" class="paste-btn" title="粘贴文本">
-                        <span class="paste-text">粘贴</span>
-                    </button>
+                    <div class="button-group">
+                        <button id="pasteBtn" class="toolbar-btn" title="粘贴文本">
+                            <span class="paste-text">粘贴</span>
+                        </button>
+                        <button id="exportBtn" class="toolbar-btn" title="导出为图片">
+                            <span class="export-text">导出</span>
+                        </button>
+                    </div>
                 </div>
                 <textarea 
                     id="textInput" 
