@@ -556,15 +556,21 @@ body {
         padding: 8px 12px;
         font-size: 0.65rem;
         gap: 4px;
+        /* 保持按钮文字显示 */
+        white-space: nowrap;
     }
     
     .button-group {
         justify-content: flex-end; /* 小屏幕时也保持右对齐 */
         gap: 4px;
+        flex-wrap: wrap; /* 允许按钮换行 */
     }
     
+    /* 移除隐藏文字的规则，让按钮在移动端也显示文字 */
     .paste-text, .export-text {
-        display: none; /* 移动端隐藏文字，只显示图标 */
+        /* display: none; 移除这行，让文字正常显示 */
+        font-size: 0.65rem;
+        font-weight: 500;
     }
     
     .message-box {
